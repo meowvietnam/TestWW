@@ -481,29 +481,35 @@ public class BoardManager : MonoBehaviour
     
     public void FillCandyToBoardGame()
     {
-        if(boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].objCandyRender == null)
+        if(squareComponentSelect != null)
         {
-            if(CheckIsSquareSelectInBoardGame())
+
+            if (boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].objCandyRender == null)
             {
-                boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].candyPoolIndex = boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].candyPoolIndex;
-                boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].objCandyRender = boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender;
-                boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender = null;
-                boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].candyPoolIndex = -1;
+                if (CheckIsSquareSelectInBoardGame())
+                {
+                    boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].candyPoolIndex = boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].candyPoolIndex;
+                    boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].objCandyRender = boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender;
+                    boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender = null;
+                    boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].candyPoolIndex = -1;
+
+
+                }
+                else
+                {
+                    boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].candyPoolIndex = boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].candyPoolIndex;
+                    boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].objCandyRender = boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender;
+                    boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender = null;
+                    countCandyInBoardWait--;
+                    FillCandyToBoardWait();
+                }
+                boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].SetCandyInBoard();
 
 
             }
-            else
-            {
-                boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].candyPoolIndex = boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].candyPoolIndex;
-                boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].objCandyRender = boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender;
-                boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender = null;
-                countCandyInBoardWait--;
-                FillCandyToBoardWait();
-            }
-            boardGame[squareColliderBoardGame.indexX, squareColliderBoardGame.indexY].SetCandyInBoard();
-
 
         }
+      
 
         //InputManager.Instance.candySelect.transform.position = squareCollider.transform.position;
     }
@@ -516,22 +522,27 @@ public class BoardManager : MonoBehaviour
     }
     public void EventCandyAfterMouseDown()
     {
-        if(CheckIsSquareSelectInBoardGame())
+        if (squareComponentSelect != null)
         {
-            if (boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender != null)
+            if (CheckIsSquareSelectInBoardGame())
             {
-                boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender.GetComponent<BoxCollider2D>().enabled = true;
+                if (boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender != null)
+                {
+                    boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender.GetComponent<BoxCollider2D>().enabled = true;
 
+                }
             }
-        }   
-        else
-        {
-            if (boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender != null)
+            else
             {
-                boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender.GetComponent<BoxCollider2D>().enabled = true;
+                if (boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender != null)
+                {
+                    boardWait[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender.GetComponent<BoxCollider2D>().enabled = true;
 
+                }
             }
+
         }
+     
     
         
 
@@ -575,7 +586,8 @@ public class BoardManager : MonoBehaviour
         }
     }    
     bool CheckIsSquareSelectInBoardGame()
-    {  
+    {
+        
         if (squareComponentSelect.gameObject.tag == "SquareBoardGame")
         {
             return true;
@@ -590,7 +602,7 @@ public class BoardManager : MonoBehaviour
     }
     void CandyMoveWithMouse()
     {
-        if (InputManager.Instance.isDrag == true)
+        if (InputManager.Instance.isDrag == true && squareComponentSelect != null)
         {
             if(CheckIsSquareSelectInBoardGame() && boardGame[squareComponentSelect.indexX, squareComponentSelect.indexY].objCandyRender != null)
             {
